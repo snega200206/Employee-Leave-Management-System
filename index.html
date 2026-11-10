@@ -1,0 +1,507 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Leave Management System</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #050B1E;
+            color: white;
+        }
+
+        /* COMMON HEADER */
+        .header {
+            background: #080F2B;
+            border: 1px solid #00D9FF;
+            padding: 12px 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            width: 65px;
+            height: 65px;
+            object-fit: contain;
+            background: #080F2B;
+        }
+
+        .brand h2 {
+            font-size: 16px;
+            color: white;
+            margin-bottom: 5px;
+        }
+
+        .brand p {
+            font-size: 11px;
+            color: #A5CFFF;
+        }
+
+        /* INFORMATION ROW */
+        .info-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            padding: 12px 20px;
+        }
+
+        .info-box {
+            background: #111D3D;
+            border: 1px solid #00D9FF;
+            padding: 10px 5px;
+            text-align: center;
+            color: white;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .info-box:nth-child(even) {
+            border-color: #8B5CF6;
+        }
+
+        /* MAIN CONTENT */
+        .main-container {
+            display: grid;
+            grid-template-columns: 1fr 420px;
+            gap: 25px;
+            max-width: 1250px;
+            margin: 25px auto;
+            padding: 10px 20px;
+        }
+
+        .welcome-panel,
+        .login-panel {
+            background: #111D3D;
+            border: 1px solid #8B5CF6;
+            padding: 30px;
+        }
+
+        .welcome-panel {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .welcome-panel h3 {
+            color: #8B5CF6;
+            font-size: 18px;
+            margin-bottom: 12px;
+        }
+
+        .welcome-panel h1 {
+            color: #00D9FF;
+            font-size: 27px;
+            line-height: 1.4;
+            margin-bottom: 15px;
+        }
+
+        .welcome-panel .description {
+            color: #A5B4D4;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .features-title {
+            color: #00D9FF;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        .features {
+            list-style: none;
+        }
+
+        .features li {
+            color: #DCEBFF;
+            font-size: 13px;
+            margin: 13px 0;
+        }
+
+        .features li::before {
+            content: "✓";
+            color: #00D9FF;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .welcome-footer {
+            color: #8B5CF6;
+            font-weight: bold;
+            font-size: 13px;
+            margin-top: 25px;
+            letter-spacing: 2px;
+        }
+
+        /* LOGIN PANEL */
+        .login-panel {
+            border-color: #00D9FF;
+        }
+
+        .login-title {
+            text-align: center;
+            color: #00D9FF;
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        .login-subtitle {
+            text-align: center;
+            color: #A5B4D4;
+            font-size: 13px;
+            margin-bottom: 25px;
+        }
+
+        .role-options {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 22px;
+        }
+
+        .role-options label {
+            flex: 1;
+            text-align: center;
+            padding: 12px 5px;
+            background: #09152E;
+            border: 1px solid #344568;
+            color: #A5B4D4;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .role-options label:has(input:checked) {
+            background: #142747;
+            border-color: #00D9FF;
+            color: #00D9FF;
+        }
+
+        .role-options input {
+            accent-color: #00D9FF;
+            margin-right: 5px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #A5B4D4;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            background: #09152E;
+            border: 1px solid #344568;
+            color: white;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .form-group input:focus {
+            border-color: #00D9FF;
+        }
+
+        .form-group input::placeholder {
+            color: #7183A8;
+        }
+
+        .show-password {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #A5B4D4;
+            font-size: 13px;
+            margin: 5px 0 20px;
+        }
+
+        .show-password input {
+            accent-color: #00D9FF;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .buttons button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .login-btn {
+            background: #00D9FF;
+            color: #050B1E;
+        }
+
+        .clear-btn {
+            background: #172B50;
+            color: #00D9FF;
+            border: 1px solid #00D9FF !important;
+        }
+
+        .login-btn:hover {
+            background: #8B5CF6;
+            color: white;
+        }
+
+        .clear-btn:hover {
+            background: #2457A6;
+            color: white;
+        }
+
+        .help-text {
+            text-align: center;
+            color: #A5B4D4;
+            font-size: 11px;
+            margin-top: 22px;
+        }
+
+        .error-message {
+            color: #FF4D6D;
+            text-align: center;
+            font-size: 13px;
+            margin-bottom: 15px;
+        }
+
+        .footer {
+            text-align: center;
+            color: #7183A8;
+            font-size: 11px;
+            padding: 15px;
+        }
+
+        /* MOBILE RESPONSIVE */
+        @media(max-width: 850px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+
+            .info-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .login-panel {
+                max-width: 550px;
+                width: 100%;
+                margin: auto;
+            }
+        }
+
+        @media(max-width: 480px) {
+            .header {
+                padding: 10px;
+            }
+
+            .logo {
+                width: 55px;
+                height: 55px;
+            }
+
+            .brand h2 {
+                font-size: 13px;
+            }
+
+            .brand p {
+                font-size: 9px;
+            }
+
+            .info-row {
+                padding: 8px;
+                gap: 6px;
+            }
+
+            .info-box {
+                font-size: 9px;
+                padding: 9px 3px;
+            }
+
+            .main-container {
+                padding: 8px;
+                margin: 12px auto;
+                gap: 15px;
+            }
+
+            .welcome-panel,
+            .login-panel {
+                padding: 20px;
+            }
+
+            .welcome-panel h1 {
+                font-size: 22px;
+            }
+
+            .login-title {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- DIT HEADER -->
+    <header class="header">
+        <div class="brand">
+            <img src="{{ url_for('static', filename='logo.png') }}"
+                 alt="DIT Logo"
+                 class="logo">
+
+            <div>
+                <h2>EMPLOYEE LEAVE MANAGEMENT SYSTEM</h2>
+                <p>Employee Management | Leave Administration</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- PROJECT INFORMATION -->
+    <section class="info-row">
+        <div class="info-box">PROJECT ID<br>DIT-P13</div>
+        <div class="info-box">TEAM ID<br>T13</div>
+        <div class="info-box">DefineInfoTech Pvt. Ltd (DIT)</div>
+        <div class="info-box">Kalaignar Karunanithi Government Arts College for Women (A)</div>
+    </section>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-container">
+
+        <!-- LEFT WELCOME PANEL -->
+        <section class="welcome-panel">
+
+            <h3>WELCOME TO</h3>
+
+            <h1>
+                EMPLOYEE LEAVE<br>
+                MANAGEMENT SYSTEM
+            </h1>
+
+            <p class="description">
+                A smart and secure platform for managing employee leave activities.
+            </p>
+
+            <h3 class="features-title">SYSTEM FEATURES</h3>
+
+            <ul class="features">
+                <li>Employee Profile Management</li>
+                <li>Online Leave Application</li>
+                <li>Leave Balance Tracking</li>
+                <li>Leave Approval and Rejection</li>
+                <li>Reports and Excel Export</li>
+                <li>Secure Role-Based Login</li>
+            </ul>
+
+            <p class="welcome-footer">SMART | SECURE | SIMPLE</p>
+
+        </section>
+
+        <!-- RIGHT LOGIN PANEL -->
+        <section class="login-panel">
+
+            <h2 class="login-title">ACCOUNT LOGIN</h2>
+
+            <p class="login-subtitle">
+                Select your account type to continue
+            </p>
+
+            <form action="{{ url_for('login') }}" method="POST" id="loginForm">
+
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        <p class="error-message">{{ messages[0] }}</p>
+                    {% endif %}
+                {% endwith %}
+
+                <div class="role-options">
+
+                    <label>
+                        <input type="radio" name="role"
+                               value="Admin" checked required>
+                        Admin Login
+                    </label>
+
+                    <label>
+                        <input type="radio" name="role"
+                               value="Employee" required>
+                        Employee Login
+                    </label>
+
+                </div>
+
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text"
+                           name="username"
+                           placeholder="Enter your username"
+                           required>
+                </div>
+
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password"
+                           id="password"
+                           name="password"
+                           placeholder="Enter your password"
+                           required>
+                </div>
+
+                <label class="show-password">
+                    <input type="checkbox" id="showPassword"
+                           onclick="togglePassword()">
+                    Show Password
+                </label>
+
+                <div class="buttons">
+                    <button type="submit" class="login-btn">LOGIN</button>
+                    <button type="reset" class="clear-btn">CLEAR</button>
+                </div>
+
+                <p class="help-text">
+                    Contact Admin if you need account assistance.
+                </p>
+
+            </form>
+
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        EMPLOYEE LEAVE MANAGEMENT SYSTEM
+    </footer>
+
+    <script>
+        function togglePassword() {
+            const password = document.getElementById("password");
+
+            password.type =
+                password.type === "password" ? "text" : "password";
+        }
+
+        document.getElementById("loginForm").addEventListener("reset", function () {
+            document.getElementById("password").type = "password";
+        });
+    </script>
+
+</body>
+</html>

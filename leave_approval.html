@@ -1,0 +1,428 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leave Approval - Employee Leave Management System</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #050B1E;
+            color: #FFFFFF;
+            padding: 20px;
+        }
+
+        .header {
+            background: #080F2B;
+            border: 1px solid #00D9FF;
+            border-radius: 12px;
+            padding: 15px 22px;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            margin-bottom: 18px;
+        }
+
+        .header img {
+            width: 65px;
+            height: 65px;
+            object-fit: contain;
+        }
+
+        .header h2 {
+            color: #FFFFFF;
+            font-size: 20px;
+        }
+
+        .header p {
+            color: #A5CFFF;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .container {
+            max-width: 1250px;
+            margin: auto;
+        }
+
+        .project-info {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 22px;
+        }
+
+        .info-box {
+            background: #111D3D;
+            border: 1px solid #8B5CF6;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .back-btn {
+            display: inline-block;
+            background: #263D70;
+            color: white;
+            text-decoration: none;
+            padding: 11px 20px;
+            border-radius: 7px;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            transition: 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #00D9FF;
+            color: #050B1E;
+        }
+
+        .page-title {
+            color: #00D9FF;
+            font-size: 21px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .card {
+            background: #111D3D;
+            border: 1px solid #00D9FF;
+            border-radius: 12px;
+            padding: 22px;
+            margin-bottom: 24px;
+            box-shadow: 0 0 12px rgba(0, 217, 255, 0.08);
+        }
+
+        .card h3 {
+            color: #00D9FF;
+            font-size: 17px;
+            margin-bottom: 20px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1000px;
+        }
+
+        th {
+            background: #080F2B;
+            color: #00D9FF;
+            padding: 14px;
+            text-align: left;
+            font-size: 13px;
+            border-bottom: 1px solid #00D9FF;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 13px;
+            border-bottom: 1px solid #263D70;
+            font-size: 13px;
+        }
+
+        tbody tr:hover {
+            background: #1A2B50;
+        }
+
+        .status {
+            font-weight: bold;
+        }
+
+        .pending {
+            color: #FFD166;
+        }
+
+        .approved {
+            color: #00E59B;
+        }
+
+        .rejected {
+            color: #FF6B6B;
+        }
+
+        .message {
+            background: #173B45;
+            border: 1px solid #00D9FF;
+            color: #FFFFFF;
+            padding: 12px 15px;
+            border-radius: 7px;
+            margin-bottom: 15px;
+            font-size: 13px;
+        }
+
+        .action-form {
+            display: flex;
+            gap: 7px;
+        }
+
+        .action-btn {
+            padding: 9px 13px;
+            border: none;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .approve-btn {
+            background: #00C781;
+            color: #050B1E;
+        }
+
+        .approve-btn:hover {
+            background: #00E59B;
+            transform: translateY(-2px);
+        }
+
+        .reject-btn {
+            background: #FF4D6D;
+            color: #FFFFFF;
+        }
+
+        .reject-btn:hover {
+            background: #D93655;
+            transform: translateY(-2px);
+        }
+
+        .refresh-btn {
+            display: inline-block;
+            background: #263D70;
+            color: white;
+            text-decoration: none;
+            padding: 11px 20px;
+            border-radius: 7px;
+            font-size: 13px;
+            font-weight: bold;
+            margin-top: 15px;
+            transition: 0.3s;
+        }
+
+        .refresh-btn:hover {
+            background: #00D9FF;
+            color: #050B1E;
+        }
+
+        @media(max-width: 800px) {
+            .project-info {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .header h2 {
+                font-size: 15px;
+            }
+        }
+
+        @media(max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            .header {
+                padding: 12px;
+            }
+
+            .header img {
+                width: 48px;
+                height: 48px;
+            }
+
+            .project-info {
+                gap: 8px;
+            }
+
+            .info-box {
+                font-size: 10px;
+                padding: 10px 5px;
+            }
+
+            .card {
+                padding: 15px;
+            }
+
+            .page-title {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="header">
+
+    <img src="{{ url_for('static', filename='logo.png') }}"
+         alt="DIT Logo">
+
+    <div>
+        <h2>EMPLOYEE LEAVE MANAGEMENT SYSTEM</h2>
+        <p>Employee Management | Leave Administration</p>
+    </div>
+
+</div>
+
+<div class="container">
+
+    <div class="project-info">
+
+        <div class="info-box">
+            PROJECT ID<br>DIT-P13
+        </div>
+
+        <div class="info-box">
+            TEAM ID<br>T13
+        </div>
+
+        <div class="info-box">
+            DefineInfoTech Pvt. Ltd. (DIT)
+        </div>
+
+        <div class="info-box">
+            Kalaignar Karunanithi Government Arts College for Women (A)
+        </div>
+
+    </div>
+
+    <a href="{{ url_for('dashboard') }}" class="back-btn">
+        ← Back to Dashboard
+    </a>
+
+    <h2 class="page-title">
+        LEAVE APPROVAL MANAGEMENT
+    </h2>
+
+    {% with messages = get_flashed_messages() %}
+        {% for message in messages %}
+            <div class="message">{{ message }}</div>
+        {% endfor %}
+    {% endwith %}
+
+    <div class="card">
+
+        <h3>Employee Leave Requests</h3>
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Leave ID</th>
+                        <th>Employee ID</th>
+                        <th>Name</th>
+                        <th>Leave Type</th>
+                        <th>From Date</th>
+                        <th>To Date</th>
+                        <th>Days</th>
+                        <th>Reason</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for leave in applications %}
+
+                    <tr>
+
+                        <td>{{ leave[0] }}</td>
+                        <td>{{ leave[1] }}</td>
+                        <td>{{ leave[2] }}</td>
+                        <td>{{ leave[3] }}</td>
+                        <td>{{ leave[4] }}</td>
+                        <td>{{ leave[5] }}</td>
+                        <td>{{ leave[6] }}</td>
+                        <td>{{ leave[7] }}</td>
+
+                        <td>
+                            <span class="status
+                                {% if leave[8] == 'Pending' %}pending
+                                {% elif leave[8] == 'Approved' %}approved
+                                {% else %}rejected{% endif %}">
+                                {{ leave[8] }}
+                            </span>
+                        </td>
+
+                        <td>
+
+                            {% if leave[8] == 'Pending' %}
+
+                            <div class="action-form">
+
+                                <form method="POST"
+                                      action="{{ url_for('approve_leave', leave_id=leave[0]) }}">
+
+                                    <button type="submit"
+                                            class="action-btn approve-btn">
+                                        APPROVE
+                                    </button>
+
+                                </form>
+
+                                <form method="POST"
+                                      action="{{ url_for('reject_leave', leave_id=leave[0]) }}">
+
+                                    <button type="submit"
+                                            class="action-btn reject-btn">
+                                        REJECT
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                            {% else %}
+
+                                <span>Completed</span>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                    {% else %}
+
+                    <tr>
+                        <td colspan="10" style="text-align:center;">
+                            No leave applications available.
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <a href="{{ url_for('leave_approval') }}"
+           class="refresh-btn">
+            ↻ REFRESH
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,289 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Leave History - Employee Leave Management System</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #050B1E, #101A35, #080F2B);
+            color: white;
+        }
+
+        .header {
+            background: #080F2B;
+            padding: 15px 25px;
+            border-bottom: 1px solid #00D9FF;
+        }
+
+        .header-top {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            width: 65px;
+            height: 65px;
+            object-fit: contain;
+        }
+
+        .brand h2 {
+            font-size: 17px;
+            margin-bottom: 5px;
+        }
+
+        .brand p {
+            color: #A5CFFF;
+            font-size: 12px;
+        }
+
+        .container {
+            max-width: 1250px;
+            margin: auto;
+            padding: 30px 25px;
+        }
+
+        .title {
+            color: #00D9FF;
+            font-size: 25px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #A5B4D4;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        .table-card {
+            background: #111D3D;
+            border: 1px solid #00D9FF;
+            border-radius: 10px;
+            padding: 20px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 750px;
+        }
+
+        th {
+            background: #080F2B;
+            color: #00D9FF;
+            padding: 14px;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        td {
+            padding: 14px;
+            border-bottom: 1px solid #263858;
+            color: #DCE7FF;
+            font-size: 13px;
+        }
+
+        tr:hover {
+            background: #192B4D;
+        }
+
+        .status {
+            font-weight: bold;
+        }
+
+        .pending {
+            color: #FFB547;
+        }
+
+        .approved {
+            color: #00D68F;
+        }
+
+        .rejected {
+            color: #FF5D73;
+        }
+
+        .empty {
+            text-align: center;
+            color: #A5B4D4;
+            padding: 25px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 22px;
+        }
+
+        .btn {
+            display: inline-block;
+            text-decoration: none;
+            padding: 11px 20px;
+            border-radius: 7px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .back-btn {
+            background: #111D3D;
+            color: #00D9FF;
+            border: 1px solid #00D9FF;
+        }
+
+        .refresh-btn {
+            background: #8B5CF6;
+            color: white;
+            border: 1px solid #8B5CF6;
+        }
+
+        .btn:hover {
+            opacity: 0.85;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #7183A8;
+            font-size: 12px;
+        }
+
+        @media(max-width: 550px) {
+            .header {
+                padding: 12px;
+            }
+
+            .logo {
+                width: 48px;
+                height: 48px;
+            }
+
+            .brand h2 {
+                font-size: 13px;
+            }
+
+            .brand p {
+                font-size: 10px;
+            }
+
+            .container {
+                padding: 22px 13px;
+            }
+
+            .title {
+                font-size: 21px;
+            }
+
+            .table-card {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="header">
+    <div class="header-top">
+        <img
+            src="{{ url_for('static', filename='logo.png') }}"
+            alt="DIT Logo"
+            class="logo"
+        >
+
+        <div class="brand">
+            <h2>EMPLOYEE LEAVE MANAGEMENT SYSTEM</h2>
+            <p>Employee Management | Leave Administration</p>
+        </div>
+    </div>
+</header>
+
+<main class="container">
+
+    <h1 class="title">MY LEAVE HISTORY</h1>
+
+    <p class="subtitle">
+        View your previous leave applications and their current status.
+    </p>
+
+    <section class="table-card">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Leave ID</th>
+                    <th>Leave Type</th>
+                    <th>From Date</th>
+                    <th>To Date</th>
+                    <th>Total Days</th>
+                    <th>Reason</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for leave in applications %}
+
+                <tr>
+                    <td>{{ leave[0] }}</td>
+                    <td>{{ leave[1] }}</td>
+                    <td>{{ leave[2] }}</td>
+                    <td>{{ leave[3] }}</td>
+                    <td>{{ leave[4] }}</td>
+                    <td>{{ leave[5] }}</td>
+
+                    <td>
+                        <span class="status
+                            {% if leave[6] == 'Approved' %}approved
+                            {% elif leave[6] == 'Rejected' %}rejected
+                            {% else %}pending{% endif %}">
+                            {{ leave[6] }}
+                        </span>
+                    </td>
+                </tr>
+
+                {% else %}
+
+                <tr>
+                    <td colspan="7" class="empty">
+                        No leave history available.
+                    </td>
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+        </table>
+
+    </section>
+
+    <div class="buttons">
+        <a href="{{ url_for('dashboard') }}" class="btn back-btn">
+            Back to Dashboard
+        </a>
+
+        <a href="{{ url_for('my_leave_history') }}" class="btn refresh-btn">
+            Refresh
+        </a>
+    </div>
+
+</main>
+
+<footer class="footer">
+    © 2026 Employee Leave Management System
+</footer>
+
+</body>
+</html>

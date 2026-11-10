@@ -1,0 +1,339 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports - Employee Leave Management System</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #050B1E;
+            color: #EAF2FF;
+            padding: 25px;
+        }
+
+        .container {
+            max-width: 1250px;
+            margin: auto;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 20px;
+            background: #080F2B;
+            border: 1px solid #1C315B;
+            border-radius: 14px;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            width: 65px;
+            height: 65px;
+            object-fit: contain;
+        }
+
+        .header h1 {
+            color: #42C8FF;
+            font-size: 25px;
+        }
+
+        .header p {
+            color: #AAB9D6;
+            margin-top: 6px;
+        }
+
+        .project-info {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            background: #0D1733;
+            border: 1px solid #1C315B;
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin-bottom: 22px;
+            color: #B9C9E8;
+        }
+
+        .project-info strong {
+            color: #42C8FF;
+        }
+
+        .report-card {
+            background: #0D1733;
+            border: 1px solid #1C315B;
+            border-radius: 15px;
+            padding: 25px;
+        }
+
+        h2 {
+            color: #42C8FF;
+            margin-bottom: 20px;
+        }
+
+        .filter-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 22px;
+        }
+
+        select {
+            background: #111F40;
+            color: white;
+            border: 1px solid #34517E;
+            border-radius: 8px;
+            padding: 12px;
+            min-width: 200px;
+            outline: none;
+        }
+
+        button, .btn {
+            border: none;
+            border-radius: 8px;
+            padding: 12px 18px;
+            color: white;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+            display: inline-block;
+        }
+
+        .filter-btn {
+            background: #1677D2;
+        }
+
+        .export-btn {
+            background: #00A878;
+        }
+
+        .back-btn {
+            background: #354665;
+        }
+
+        button:hover, .btn:hover {
+            opacity: 0.85;
+            transform: translateY(-2px);
+        }
+
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            min-width: 850px;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #14264B;
+            color: #42C8FF;
+            padding: 14px;
+            text-align: left;
+            border-bottom: 1px solid #34517E;
+        }
+
+        td {
+            padding: 13px;
+            border-bottom: 1px solid #24385D;
+            color: #DCE7FA;
+        }
+
+        tr:hover {
+            background: #14264B;
+        }
+
+        .status {
+            font-weight: bold;
+        }
+
+        .pending {
+            color: #FFC857;
+        }
+
+        .approved {
+            color: #00E59B;
+        }
+
+        .rejected {
+            color: #FF647C;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 30px;
+            color: #AAB9D6;
+        }
+
+        .bottom-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 22px;
+            flex-wrap: wrap;
+        }
+
+        .flash-message {
+            background: #14264B;
+            color: #42C8FF;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 12px;
+            }
+
+            .header h1 {
+                font-size: 18px;
+            }
+
+            .report-card {
+                padding: 15px;
+            }
+
+            .filter-section {
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <div class="header">
+        <img src="{{ url_for('static', filename='logo.png') }}"
+             class="logo" alt="DIT Logo">
+
+        <div>
+            <h1>EMPLOYEE LEAVE MANAGEMENT SYSTEM</h1>
+            <p>DIT Internship 2026 | Reports Management</p>
+        </div>
+    </div>
+
+    <div class="project-info">
+        <span><strong>Project ID:</strong> DIT-P13</span>
+        <span><strong>Team ID:</strong> T13</span>
+        <span><strong>Organization:</strong> DefineInfoTech Pvt. Ltd.</span>
+    </div>
+
+    <div class="report-card">
+
+        <h2>LEAVE REPORTS</h2>
+
+        {% with messages = get_flashed_messages() %}
+            {% for message in messages %}
+                <div class="flash-message">{{ message }}</div>
+            {% endfor %}
+        {% endwith %}
+
+        <div class="filter-section">
+
+            <form method="GET" action="{{ url_for('reports') }}">
+                <select name="report_type">
+                    <option value="All Leaves"
+                        {% if selected == 'All Leaves' %}selected{% endif %}>
+                        All Leaves
+                    </option>
+
+                    <option value="Pending Leaves"
+                        {% if selected == 'Pending Leaves' %}selected{% endif %}>
+                        Pending Leaves
+                    </option>
+
+                    <option value="Approved Leaves"
+                        {% if selected == 'Approved Leaves' %}selected{% endif %}>
+                        Approved Leaves
+                    </option>
+
+                    <option value="Rejected Leaves"
+                        {% if selected == 'Rejected Leaves' %}selected{% endif %}>
+                        Rejected Leaves
+                    </option>
+                </select>
+
+                <button type="submit" class="filter-btn">
+                    Apply Filter
+                </button>
+            </form>
+
+            <a class="btn export-btn"
+               href="{{ url_for('export_reports', report_type=selected) }}">
+                Export Excel
+            </a>
+
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Leave ID</th>
+                        <th>Employee ID</th>
+                        <th>Employee Name</th>
+                        <th>Leave Type</th>
+                        <th>From Date</th>
+                        <th>To Date</th>
+                        <th>Days</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for leave in report_data %}
+                    <tr>
+                        <td>{{ leave[0] }}</td>
+                        <td>{{ leave[1] }}</td>
+                        <td>{{ leave[2] }}</td>
+                        <td>{{ leave[3] }}</td>
+                        <td>{{ leave[4] }}</td>
+                        <td>{{ leave[5] }}</td>
+                        <td>{{ leave[6] }}</td>
+                        <td>
+                            <span class="status
+                                {% if leave[7] == 'Pending' %}pending
+                                {% elif leave[7] == 'Approved' %}approved
+                                {% elif leave[7] == 'Rejected' %}rejected
+                                {% endif %}">
+                                {{ leave[7] }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="8" class="empty">
+                            No report data available.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="bottom-actions">
+            <a href="{{ url_for('dashboard') }}" class="btn back-btn">
+                Back to Dashboard
+            </a>
+        </div>
+
+    </div>
+</div>
+</body>
+</html>

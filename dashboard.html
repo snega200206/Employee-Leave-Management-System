@@ -1,0 +1,584 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Employee Leave Management System</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #050B1E, #101A35, #080F2B);
+            color: white;
+        }
+
+        .header {
+            background: #080F2B;
+            padding: 15px 25px;
+            border-bottom: 1px solid #00D9FF;
+        }
+
+        .header-top {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            width: 65px;
+            height: 65px;
+            object-fit: contain;
+        }
+
+        .brand h2 {
+            color: white;
+            font-size: 17px;
+            margin-bottom: 5px;
+        }
+
+        .brand p {
+            color: #A5CFFF;
+            font-size: 12px;
+        }
+
+        .user-info {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .welcome {
+            color: #00D9FF;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .role {
+            color: #B99AFF;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .logout {
+            text-decoration: none;
+            background: #401B35;
+            color: #FF4D6D;
+            padding: 10px 18px;
+            border-radius: 7px;
+            border: 1px solid #FF4D6D;
+            font-weight: bold;
+        }
+
+        .logout:hover {
+            background: #FF4D6D;
+            color: white;
+        }
+
+        .project-info {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .info-box {
+            background: #111D3D;
+            border: 1px solid #00D9FF;
+            border-radius: 6px;
+            padding: 9px;
+            text-align: center;
+            color: white;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .info-box:nth-child(even) {
+            border-color: #8B5CF6;
+        }
+
+        .container {
+            max-width: 1250px;
+            margin: auto;
+            padding: 30px 25px;
+        }
+
+        .dashboard-title {
+            color: #00D9FF;
+            font-size: 25px;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #A5B4D4;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            color: #8B5CF6;
+            font-size: 18px;
+            margin-bottom: 17px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: #111D3D;
+            border: 1px solid #00D9FF;
+            border-radius: 10px;
+            padding: 22px 15px;
+            text-align: center;
+            transition: 0.3s;
+        }
+
+        .stat-card:nth-child(even) {
+            border-color: #8B5CF6;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 0 15px rgba(0, 217, 255, 0.2);
+        }
+
+        .stat-card h3 {
+            color: #A5CFFF;
+            font-size: 13px;
+            margin-bottom: 13px;
+        }
+
+        .stat-number {
+            color: #00D9FF;
+            font-size: 30px;
+            font-weight: bold;
+        }
+
+        .stat-card:nth-child(2) .stat-number {
+            color: #FFB547;
+        }
+
+        .stat-card:nth-child(3) .stat-number {
+            color: #00D68F;
+        }
+
+        .stat-card:nth-child(4) .stat-number {
+            color: #FF5D73;
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .option-card {
+            display: block;
+            text-decoration: none;
+            background: #111D3D;
+            border: 1px solid #00D9FF;
+            border-radius: 10px;
+            padding: 23px 20px;
+            min-height: 125px;
+            transition: 0.3s;
+        }
+
+        .option-card:nth-child(even) {
+            border-color: #8B5CF6;
+        }
+
+        .option-card:hover {
+            transform: translateY(-4px);
+            background: #192B4D;
+            box-shadow: 0 0 15px rgba(0, 217, 255, 0.2);
+        }
+
+        .option-card h3 {
+            color: #00D9FF;
+            font-size: 16px;
+            margin-bottom: 12px;
+        }
+
+        .option-card:nth-child(even) h3 {
+            color: #B99AFF;
+        }
+
+        .option-card p {
+            color: #A5B4D4;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .wide-card {
+            grid-column: span 1;
+        }
+
+        .profile-card {
+            background: #111D3D;
+            border: 1px solid #00D9FF;
+            border-radius: 10px;
+            padding: 22px;
+            margin-bottom: 25px;
+        }
+
+        .profile-card h2 {
+            color: #00D9FF;
+            font-size: 18px;
+            margin-bottom: 18px;
+        }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .profile-item {
+            padding: 12px;
+            background: #080F2B;
+            border-radius: 6px;
+            border: 1px solid #263858;
+        }
+
+        .profile-item span {
+            display: block;
+            color: #8FA5C9;
+            font-size: 12px;
+            margin-bottom: 7px;
+        }
+
+        .profile-item strong {
+            color: white;
+            font-size: 14px;
+        }
+
+        .employee-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .employee-option {
+            display: block;
+            text-decoration: none;
+            background: #111D3D;
+            border: 1px solid #8B5CF6;
+            border-radius: 10px;
+            padding: 22px;
+            transition: 0.3s;
+        }
+
+        .employee-option:hover {
+            transform: translateY(-4px);
+            background: #192B4D;
+        }
+
+        .employee-option h3 {
+            color: #B99AFF;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .employee-option p {
+            color: #A5B4D4;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #7183A8;
+            font-size: 12px;
+        }
+
+        @media (max-width: 850px) {
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .options {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .employee-options {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .project-info {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 550px) {
+            .header {
+                padding: 14px;
+            }
+
+            .logo {
+                width: 48px;
+                height: 48px;
+            }
+
+            .brand h2 {
+                font-size: 13px;
+            }
+
+            .brand p {
+                font-size: 10px;
+            }
+
+            .user-info {
+                width: 100%;
+                margin-left: 0;
+            }
+
+            .container {
+                padding: 22px 13px;
+            }
+
+            .dashboard-title {
+                font-size: 21px;
+            }
+
+            .stats,
+            .options,
+            .employee-options,
+            .profile-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stat-card {
+                padding: 18px;
+            }
+
+            .option-card {
+                min-height: 110px;
+            }
+
+            .info-box {
+                font-size: 9px;
+                padding: 8px 4px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="header">
+
+    <div class="header-top">
+
+        <img
+            src="{{ url_for('static', filename='logo.png') }}"
+            alt="DIT Logo"
+            class="logo"
+        >
+
+        <div class="brand">
+            <h2>EMPLOYEE LEAVE MANAGEMENT SYSTEM</h2>
+            <p>Employee Management | Leave Administration</p>
+        </div>
+
+        <div class="user-info">
+            <span class="welcome">WELCOME, {{ full_name }}</span>
+            <span class="role">{{ role }}</span>
+            <a href="{{ url_for('logout') }}" class="logout">Logout</a>
+        </div>
+
+    </div>
+
+    <div class="project-info">
+        <div class="info-box">PROJECT ID: DIT-P13</div>
+        <div class="info-box">TEAM ID: T13</div>
+        <div class="info-box">DefineInfoTech Pvt. Ltd. (DIT)</div>
+        <div class="info-box">Kalaignar Karunanithi Government Arts College for Women (A)</div>
+    </div>
+
+</header>
+
+<main class="container">
+
+    {% if role == 'Admin' %}
+
+        <h1 class="dashboard-title">ADMIN DASHBOARD</h1>
+        <p class="subtitle">
+            Manage employees, leave applications, approvals and reports
+        </p>
+
+        <h2 class="section-title">DASHBOARD OVERVIEW</h2>
+
+        <section class="stats">
+
+            <div class="stat-card">
+                <h3>Total Employees</h3>
+                <div class="stat-number">{{ total_employees }}</div>
+            </div>
+
+            <div class="stat-card">
+                <h3>Pending Leaves</h3>
+                <div class="stat-number">{{ pending_leaves }}</div>
+            </div>
+
+            <div class="stat-card">
+                <h3>Approved Leaves</h3>
+                <div class="stat-number">{{ approved_leaves }}</div>
+            </div>
+
+            <div class="stat-card">
+                <h3>Rejected Leaves</h3>
+                <div class="stat-number">{{ rejected_leaves }}</div>
+            </div>
+
+        </section>
+
+        <h2 class="section-title">MANAGEMENT OPTIONS</h2>
+
+        <section class="options">
+
+            <a href="{{ url_for('employee_management') }}" class="option-card">
+                <h3>Employee Management</h3>
+                <p>Add, update and delete employee details.</p>
+            </a>
+
+            <a href="{{ url_for('leave_application') }}" class="option-card">
+                <h3>Leave Applications</h3>
+                <p>View and manage employee leave applications.</p>
+            </a>
+
+            <a href="{{ url_for('leave_balance') }}" class="option-card">
+                <h3>Leave Balance</h3>
+                <p>View employee leave balance details.</p>
+            </a>
+
+            <a href="{{ url_for('reports') }}" class="option-card">
+                <h3>Reports</h3>
+                <p>View leave reports and export Excel data.</p>
+            </a>
+
+            <a href="{{ url_for('leave_approval') }}" class="option-card wide-card">
+                <h3>Leave Approval</h3>
+                <p>Approve or reject employee leave requests.</p>
+            </a>
+
+        </section>
+
+    {% else %}
+
+        <h1 class="dashboard-title">EMPLOYEE DASHBOARD</h1>
+        <p class="subtitle">
+            Welcome to your employee account. Manage your leave activities here.
+        </p>
+
+        <section class="profile-card">
+
+            <h2>MY PROFILE</h2>
+
+            <div class="profile-grid">
+
+                <div class="profile-item">
+                    <span>Employee ID</span>
+                    <strong>{{ employee.employee_id }}</strong>
+                </div>
+
+                <div class="profile-item">
+                    <span>Full Name</span>
+                    <strong>{{ employee.full_name }}</strong>
+                </div>
+
+                <div class="profile-item">
+                    <span>Department</span>
+                    <strong>{{ employee.department }}</strong>
+                </div>
+
+                <div class="profile-item">
+                    <span>Designation</span>
+                    <strong>{{ employee.designation }}</strong>
+                </div>
+
+                <div class="profile-item">
+                    <span>Email</span>
+                    <strong>{{ employee.email }}</strong>
+                </div>
+
+                <div class="profile-item">
+                    <span>Phone</span>
+                    <strong>{{ employee.phone }}</strong>
+                </div>
+
+                <div class="profile-item">
+                    <span>Joining Date</span>
+                    <strong>{{ employee.joining_date }}</strong>
+                </div>
+
+            </div>
+
+        </section>
+
+        <h2 class="section-title">MY LEAVE STATISTICS</h2>
+
+        <section class="stats">
+
+            <div class="stat-card">
+                <h3>Pending Leaves</h3>
+                <div class="stat-number">{{ pending_leaves }}</div>
+            </div>
+
+            <div class="stat-card">
+                <h3>Approved Leaves</h3>
+                <div class="stat-number">{{ approved_leaves }}</div>
+            </div>
+
+            <div class="stat-card">
+                <h3>Rejected Leaves</h3>
+                <div class="stat-number">{{ rejected_leaves }}</div>
+            </div>
+
+        </section>
+
+        <h2 class="section-title">EMPLOYEE OPTIONS</h2>
+
+        <section class="employee-options">
+
+            <a href="{{ url_for('leave_application') }}" class="employee-option">
+                <h3>Apply for Leave</h3>
+                <p>Submit your leave application with dates and reason.</p>
+            </a>
+
+            <a href="{{ url_for('leave_balance') }}" class="employee-option">
+                <h3>My Leave Balance</h3>
+                <p>View your available, used and remaining leave days.</p>
+            </a>
+
+            <a href="{{ url_for('my_leave_history') }}" class="employee-option">
+                <h3>My Leave History</h3>
+                <p>View your previous leave applications and status.</p>
+            </a>
+
+        </section>
+
+    {% endif %}
+
+</main>
+
+<footer class="footer">
+    © 2026 Employee Leave Management System
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,382 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leave Balance - Employee Leave Management System</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #050B1E, #101A35, #080F2B);
+            color: white;
+        }
+
+        .header {
+            background: #080F2B;
+            padding: 15px 25px;
+            border-bottom: 1px solid #00D9FF;
+        }
+
+        .header-top {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            width: 65px;
+            height: 65px;
+            object-fit: contain;
+        }
+
+        .brand h2 {
+            color: white;
+            font-size: 17px;
+            margin-bottom: 5px;
+        }
+
+        .brand p {
+            color: #A5CFFF;
+            font-size: 12px;
+        }
+
+        .user-info {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .welcome {
+            color: #00D9FF;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .logout {
+            text-decoration: none;
+            background: #401B35;
+            color: #FF4D6D;
+            padding: 10px 18px;
+            border-radius: 7px;
+            border: 1px solid #FF4D6D;
+            font-weight: bold;
+        }
+
+        .logout:hover {
+            background: #FF4D6D;
+            color: white;
+        }
+
+        .project-info {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .info-box {
+            background: #111D3D;
+            border: 1px solid #00D9FF;
+            border-radius: 6px;
+            padding: 9px;
+            text-align: center;
+            color: white;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .info-box:nth-child(even) {
+            border-color: #8B5CF6;
+        }
+
+        .container {
+            max-width: 1250px;
+            margin: auto;
+            padding: 30px 25px;
+        }
+
+        .page-title {
+            color: #00D9FF;
+            font-size: 25px;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #A5B4D4;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        .table-card {
+            background: #111D3D;
+            border: 1px solid #00D9FF;
+            border-radius: 10px;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        .table-heading {
+            color: #8B5CF6;
+            font-size: 18px;
+            margin-bottom: 18px;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            min-width: 750px;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #080F2B;
+            color: #00D9FF;
+            padding: 14px 12px;
+            text-align: left;
+            font-size: 13px;
+            border-bottom: 1px solid #00D9FF;
+        }
+
+        td {
+            padding: 14px 12px;
+            color: #DCE7FF;
+            font-size: 13px;
+            border-bottom: 1px solid #263858;
+        }
+
+        tr:hover td {
+            background: #192B4D;
+        }
+
+        .remaining {
+            color: #00D68F;
+            font-weight: bold;
+        }
+
+        .empty {
+            text-align: center;
+            color: #A5B4D4;
+            padding: 25px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 22px;
+            flex-wrap: wrap;
+        }
+
+        .back-button,
+        .refresh-button {
+            display: inline-block;
+            text-decoration: none;
+            padding: 12px 20px;
+            border-radius: 7px;
+            font-weight: bold;
+        }
+
+        .back-button {
+            background: #12364A;
+            color: #00D9FF;
+            border: 1px solid #00D9FF;
+        }
+
+        .refresh-button {
+            background: #252044;
+            color: #B99AFF;
+            border: 1px solid #8B5CF6;
+        }
+
+        .back-button:hover {
+            background: #00D9FF;
+            color: #050B1E;
+        }
+
+        .refresh-button:hover {
+            background: #8B5CF6;
+            color: white;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #7183A8;
+            font-size: 12px;
+        }
+
+        @media (max-width: 850px) {
+            .project-info {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 550px) {
+            .header {
+                padding: 14px;
+            }
+
+            .logo {
+                width: 48px;
+                height: 48px;
+            }
+
+            .brand h2 {
+                font-size: 13px;
+            }
+
+            .brand p {
+                font-size: 10px;
+            }
+
+            .user-info {
+                width: 100%;
+                margin-left: 0;
+            }
+
+            .container {
+                padding: 22px 12px;
+            }
+
+            .table-card {
+                padding: 13px;
+            }
+
+            .page-title {
+                font-size: 21px;
+            }
+
+            .info-box {
+                font-size: 9px;
+                padding: 8px 4px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="header">
+
+    <div class="header-top">
+
+        <img
+            src="{{ url_for('static', filename='logo.png') }}"
+            alt="DIT Logo"
+            class="logo"
+        >
+
+        <div class="brand">
+            <h2>EMPLOYEE LEAVE MANAGEMENT SYSTEM</h2>
+            <p>Employee Management | Leave Administration</p>
+        </div>
+
+        <div class="user-info">
+            <span class="welcome">WELCOME, {{ full_name }}</span>
+            <a href="{{ url_for('logout') }}" class="logout">Logout</a>
+        </div>
+
+    </div>
+
+    <div class="project-info">
+        <div class="info-box">PROJECT ID: DIT-P13</div>
+        <div class="info-box">TEAM ID: T13</div>
+        <div class="info-box">DefineInfoTech Pvt. Ltd. (DIT)</div>
+        <div class="info-box">Kalaignar Karunanithi Government Arts College for Women (A)</div>
+    </div>
+
+</header>
+
+<main class="container">
+
+    <h1 class="page-title">{{ page_title }}</h1>
+
+    <p class="subtitle">
+        View employee leave allocation, used days and remaining balance
+    </p>
+
+    <section class="table-card">
+
+        <h2 class="table-heading">LEAVE BALANCE DETAILS</h2>
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Employee ID</th>
+                        <th>Employee Name</th>
+                        <th>Leave Type</th>
+                        <th>Total Days</th>
+                        <th>Used Days</th>
+                        <th>Remaining Days</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for balance in balances %}
+
+                    <tr>
+                        <td>{{ balance[0] }}</td>
+                        <td>{{ balance[1] }}</td>
+                        <td>{{ balance[2] }}</td>
+                        <td>{{ balance[3] }}</td>
+                        <td>{{ balance[4] }}</td>
+                        <td class="remaining">{{ balance[5] }}</td>
+                    </tr>
+
+                    {% else %}
+
+                    <tr>
+                        <td colspan="6" class="empty">
+                            No leave balance records available.
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <div class="actions">
+
+            <a href="{{ url_for('dashboard') }}" class="back-button">
+                Back to Dashboard
+            </a>
+
+            <a href="{{ url_for('leave_balance') }}" class="refresh-button">
+                ↻ Refresh
+            </a>
+
+        </div>
+
+    </section>
+
+</main>
+
+<footer class="footer">
+    © 2026 Employee Leave Management System
+</footer>
+
+</body>
+</html>
