@@ -502,6 +502,23 @@ def add_employee():
             phone,
             joining_date
         ))
+        # CREATE DEFAULT LEAVE BALANCE
+        leave_allocations = [
+            ("Casual", 12),
+            ("Sick", 12),
+            ("Earned", 15)
+        ]
+
+        for leave_type, total_days in leave_allocations:
+            cursor.execute("""
+                INSERT INTO leave_balance
+                (employee_id, leave_type, total_days, used_days)
+                VALUES (?, ?, ?, 0)
+            """, (
+                employee_id,
+                leave_type,
+                total_days
+            ))
 
         # Default employee login account
         initial_password = "EMP@" + employee_id[3:]
