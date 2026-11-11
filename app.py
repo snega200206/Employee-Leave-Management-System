@@ -4,7 +4,7 @@ import sys
 import hashlib
 import secrets
 import hmac
-import sqlite3
+import psycopg
 from datetime import datetime
 
 from flask import (
@@ -92,7 +92,7 @@ def create_admin():
     cursor = conn.cursor()
 
     cursor.execute(
-        "SELECT user_id FROM users WHERE username = ?",
+        "SELECT user_id FROM users WHERE username = %s",
         ("admin",)
     )
 
@@ -103,7 +103,7 @@ def create_admin():
         cursor.execute("""
             INSERT INTO users
             (username, password_hash, role, employee_id)
-            VALUES (?, ?, ?, ?)
+            VALUES (%s, %s, %s, %s)
         """, (
             "admin",
             hash_password("Admin@123"),
@@ -124,7 +124,7 @@ def login_user(username, password, selected_role):
     cursor.execute("""
         SELECT username, password_hash, role, employee_id
         FROM users
-        WHERE username = ?
+        WHERE username = %s
     """, (username,))
 
     user = cursor.fetchone()
@@ -154,7 +154,7 @@ def login_user(username, password, selected_role):
         cursor.execute("""
             SELECT full_name
             FROM employees
-            WHERE employee_id = ?
+            WHERE employee_id = %s
             AND is_active = 1
         """, (employee_id,))
 
@@ -301,7 +301,7 @@ def dashboard():
             SELECT employee_id, full_name, department, designation,
                    email, phone, joining_date, is_active
             FROM employees
-            WHERE employee_id = ?
+            WHERE employee_id = %s
             AND is_active = 1
         """, (employee_id,))
 
@@ -328,7 +328,7 @@ def dashboard():
         cursor.execute("""
             SELECT COUNT(*)
             FROM leave_applications
-            WHERE employee_id = ?
+            WHERE employee_id = %s
             AND status = 'Pending'
         """, (employee_id,))
         pending = cursor.fetchone()[0]
@@ -336,7 +336,7 @@ def dashboard():
         cursor.execute("""
             SELECT COUNT(*)
             FROM leave_applications
-            WHERE employee_id = ?
+            WHERE employee_id = %s
             AND status = 'Approved'
         """, (employee_id,))
         approved = cursor.fetchone()[0]
@@ -344,7 +344,7 @@ def dashboard():
         cursor.execute("""
             SELECT COUNT(*)
             FROM leave_applications
-            WHERE employee_id = ?
+            WHERE employee_id = %s
             AND status = 'Rejected'
         """, (employee_id,))
         rejected = cursor.fetchone()[0]
@@ -401,9 +401,9 @@ def employee_management():
             FROM employees
             WHERE is_active = 1
             AND (
-                employee_id LIKE ?
-                OR full_name LIKE ?
-                OR department LIKE ?
+                employee_id LIKE %s
+                OR full_name LIKE %s
+                OR department LIKE %s
             )
             ORDER BY employee_id
         """, (
@@ -492,7 +492,7 @@ def add_employee():
                 designation, email, phone, joining_date,
                 is_active
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, 1)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, 1)
         """, (
             employee_id,
             full_name,
@@ -513,7 +513,7 @@ def add_employee():
             cursor.execute("""
                 INSERT INTO leave_balance
                 (employee_id, leave_type, total_days, used_days)
-                VALUES (?, ?, ?, 0)
+                VALUES (%s, %s, %s, 0)
             """, (
                 employee_id,
                 leave_type,
@@ -526,7 +526,7 @@ def add_employee():
         cursor.execute("""
             INSERT INTO users
             (username, password_hash, role, employee_id)
-            VALUES (?, ?, ?, ?)
+            VALUES (%s, %s, %s, %s)
         """, (
             employee_id,
             hash_password(initial_password),
@@ -542,7 +542,7 @@ def add_employee():
             " | Initial Password: " + initial_password
         )
 
-    except sqlite3.IntegrityError:
+    except psycopg.IntegrityError:
 
         conn.rollback()
         flash("Employee ID, email or username already exists.")
@@ -607,13 +607,13 @@ def update_employee():
         cursor.execute("""
             UPDATE employees
             SET
-                full_name = ?,
-                department = ?,
-                designation = ?,
-                email = ?,
-                phone = ?,
-                joining_date = ?
-            WHERE employee_id = ?
+                full_name = %s,
+                department = %s,
+                designation = %s,
+                email = %s,
+                phone = %s,
+                joining_date = %s
+            WHERE employee_id = %s
             AND is_active = 1
         """, (
             full_name,
@@ -632,7 +632,7 @@ def update_employee():
             conn.commit()
             flash("Employee details updated successfully.")
 
-    except sqlite3.IntegrityError:
+    except psycopg.IntegrityError:
 
         conn.rollback()
         flash("This email address is already used by another employee.")
@@ -673,7 +673,7 @@ def delete_employee():
         cursor.execute("""
             UPDATE employees
             SET is_active = 0
-            WHERE employee_id = ?
+            WHERE employee_id = %s
             AND is_active = 1
         """, (employee_id,))
 
@@ -785,7 +785,7 @@ def leave_application():
             cursor.execute("""
                 SELECT employee_id
                 FROM employees
-                WHERE employee_id = ?
+                WHERE employee_id = %s
                 AND is_active = 1
             """, (form_employee_id,))
 
@@ -800,8 +800,8 @@ def leave_application():
             cursor.execute("""
                 SELECT total_days, used_days
                 FROM leave_balance
-                WHERE employee_id = ?
-                AND leave_type = ?
+                WHERE employee_id = %s
+                AND leave_type = %s
             """, (form_employee_id, leave_type))
 
             balance = cursor.fetchone()
@@ -822,10 +822,10 @@ def leave_application():
             cursor.execute("""
                 SELECT leave_id
                 FROM leave_applications
-                WHERE employee_id = ?
+                WHERE employee_id = %s
                 AND status IN ('Pending', 'Approved')
-                AND from_date <= ?
-                AND to_date >= ?
+                AND from_date <= %s
+                AND to_date >= %s
             """, (
                 form_employee_id,
                 to_date,
@@ -851,7 +851,7 @@ def leave_application():
                     reason,
                     status
                 )
-                VALUES (?, ?, ?, ?, ?, ?, 'Pending')
+                VALUES (%s, %s, %s, %s, %s, %s, 'Pending')
             """, (
                 form_employee_id,
                 leave_type,
@@ -924,7 +924,7 @@ def leave_application():
                 total_days,
                 status
             FROM leave_applications
-            WHERE employee_id = ?
+            WHERE employee_id = %s
             ORDER BY leave_id DESC
         """, (employee_id,))
 
@@ -1004,12 +1004,13 @@ def approve_leave(leave_id):
     cursor = conn.cursor()
 
     try:
-        cursor.execute("BEGIN IMMEDIATE")
+        
 
         cursor.execute("""
             SELECT employee_id, leave_type, total_days, status
             FROM leave_applications
-            WHERE leave_id = ?
+            WHERE leave_id = %s
+            FOR UPDATE
         """, (leave_id,))
 
         leave = cursor.fetchone()
@@ -1024,10 +1025,10 @@ def approve_leave(leave_id):
 
         cursor.execute("""
             UPDATE leave_balance
-            SET used_days = used_days + ?
-            WHERE employee_id = ?
-              AND leave_type = ?
-              AND total_days - used_days >= ?
+            SET used_days = used_days + %s
+            WHERE employee_id = %s
+              AND leave_type = %s
+              AND total_days - used_days >= %s
         """, (total_days, employee_id, leave_type, total_days))
 
         if cursor.rowcount == 0:
@@ -1038,7 +1039,7 @@ def approve_leave(leave_id):
             SET status = 'Approved',
                 reviewed_by = 'admin',
                 reviewed_at = CURRENT_TIMESTAMP
-            WHERE leave_id = ?
+            WHERE leave_id = %s
               AND status = 'Pending'
         """, (leave_id,))
 
@@ -1081,7 +1082,7 @@ def reject_leave(leave_id):
             SET status = 'Rejected',
                 reviewed_by = 'admin',
                 reviewed_at = CURRENT_TIMESTAMP
-            WHERE leave_id = ?
+            WHERE leave_id = %s
               AND status = 'Pending'
         """, (leave_id,))
 
@@ -1129,7 +1130,7 @@ def my_leave_history():
             reason,
             status
         FROM leave_applications
-        WHERE employee_id = ?
+        WHERE employee_id = %s
         ORDER BY leave_id DESC
     """, (employee_id,))
 
@@ -1196,7 +1197,7 @@ def leave_balance():
             FROM leave_balance lb
             JOIN employees e
                 ON lb.employee_id = e.employee_id
-            WHERE e.employee_id = ?
+            WHERE e.employee_id = %s
             AND e.is_active = 1
             ORDER BY lb.leave_type
         """, (employee_id,))
@@ -1283,7 +1284,7 @@ def reports():
                 FROM leave_applications l
                 JOIN employees e
                 ON l.employee_id = e.employee_id
-                WHERE l.status = ?
+                WHERE l.status = %s
                 ORDER BY l.leave_id DESC
             """, (status,))
 
@@ -1349,7 +1350,7 @@ def export_reports():
                 FROM leave_applications l
                 JOIN employees e
                 ON l.employee_id = e.employee_id
-                WHERE l.status = ?
+                WHERE l.status = %s
                 ORDER BY l.leave_id DESC
             """, (status,))
 
